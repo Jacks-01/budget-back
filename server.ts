@@ -85,6 +85,7 @@ app.post(
 
 app.get('/create_link_token', async function (req: Request, res: Response) {
   // Get the client_user_id by searching for the current user
+	console.log(`GET REQUEST:`);
   const products: Products[] = [Products.Auth]
   const country_codes: CountryCode[] =  [CountryCode.Us]
   const request: LinkTokenCreateRequest = {
