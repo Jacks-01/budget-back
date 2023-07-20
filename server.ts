@@ -19,6 +19,7 @@ const SECRET = process.env.PLAID_SECRET;
 const PORT = process.env.PORT;
 const BASE_URL = process.env.BASE_URL;
 
+
 // PLAID_PRODUCTS is a comma-separated list of products to use when initializing
 // Link. Note that this list must contain 'assets' in order for the app to be
 // able to create and retrieve asset reports.
@@ -107,6 +108,14 @@ app.get('/create_link_token', async function (req: Request, res: Response) {
     res.send(error)
   }
 });
+
+
+app.post('/tokenInfo', async (req: Request, res: Response) => {
+	console.log(req.body);
+	let ACCESS_TOKEN = req.body.ACCESS_TOKEN
+	let PUBLIC_TOKEN = req.body.PUBLIC_TOKEN
+
+})
 
 // const prettyPrintResponse = (res) => {
 //   console.log(util.inspect(res.data, { colors: true, depth: 4 }));
