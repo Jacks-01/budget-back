@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "module": "module",
   "scripts": {
     "build": "tsc --outDir build",
-    "dev": "concurrently --kill-others \"tsc --watch\" \"nodemon ./src/server.js \"",
+    "dev": "concurrently --kill-others \"tsc --watch\" \"nodemon ./dist/server.js \"",
     "start": "node build/server.js"
   },
   "author": "jack stubblefield",
