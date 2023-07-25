@@ -37,7 +37,9 @@ const PLAID_REDIRECT_URI = process.env.PLAID_REDIRECT_URI || '';
 
 // We store the access_token in memory - in production, store it in a secure
 // persistent data store
-let ACCESS_TOKEN: string | null = null;
+//! In Production: let ACCESS_TOKEN: string | null = null;
+//* For Testing:
+let ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 let PUBLIC_TOKEN: string | null = null;
 let ITEM_ID: string | null = null;
 
@@ -114,8 +116,8 @@ app.post('/token_exchange', async (req: Request, res: Response) => {
 		const response = await client.itemPublicTokenExchange(request);
 		ACCESS_TOKEN = response.data.access_token;
 		ITEM_ID = response.data.item_id;
-		console.log(`ACCESS_TOKEN: ${ACCESS_TOKEN}`)
-		console.log(`ITEM_ID: ${ITEM_ID}`)
+		console.log(`ACCESS_TOKEN: ${ACCESS_TOKEN}`);
+		console.log(`ITEM_ID: ${ITEM_ID}`);
 		// res.status(200).send(`Access Token Obtained: ${ACCESS_TOKEN}`);
 		res.send('noice');
 	} catch (err) {
