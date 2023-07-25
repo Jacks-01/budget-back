@@ -79,7 +79,7 @@ app.post(
 
 app.get('/create_link_token', async function (req: Request, res: Response) {
 	// Get the client_user_id by searching for the current user
-	console.log(`GET REQUEST:`);
+	console.log(`/create_link_token GET REQUEST:`);
 	const products: Products[] = [Products.Auth];
 	const country_codes: CountryCode[] = [CountryCode.Us];
 	const request: LinkTokenCreateRequest = {
@@ -103,19 +103,25 @@ app.get('/create_link_token', async function (req: Request, res: Response) {
 });
 
 app.post('/token_exchange', async (req: Request, res: Response) => {
-	console.log(req.body);
+	console.log(` token exchange body: ${JSON.stringify(req.body)}`);
 
-	const request: ItemPublicTokenExchangeRequest = {
-		public_token: PUBLIC_TOKEN
-	};
 	try {
+		const request: ItemPublicTokenExchangeRequest = {
+			public_token: req.body.public_token
+		};
+
+		console.log(`/token_exchange request: ${JSON.stringify(request)}`);
 		const response = await client.itemPublicTokenExchange(request);
 		ACCESS_TOKEN = response.data.access_token;
 		ITEM_ID = response.data.item_id;
-		res.status(200).send(`Access Token Obtained: ${ACCESS_TOKEN}`);
+		console.log(`ACCESS_TOKEN: ${ACCESS_TOKEN}`)
+		console.log(`ITEM_ID: ${ITEM_ID}`)
+		// res.status(200).send(`Access Token Obtained: ${ACCESS_TOKEN}`);
+		res.send('noice');
 	} catch (err) {
 		// handle error
 		console.error(err);
+		res.status(400).send('/token_exchange ERROR');
 	}
 });
 

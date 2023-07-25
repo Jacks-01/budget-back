@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc --outDir build",
     "dev": "concurrently --kill-others \"tsc --watch\" \"nodemon ./dist/server.js \"",
-    "start": "node build/server.js"
+    "start": "node server.js"
   },
   "author": "jack stubblefield",
   "license": "ISC",
