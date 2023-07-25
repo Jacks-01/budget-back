@@ -5,23 +5,23 @@ import {
 	PlaidApi,
 	PlaidEnvironments,
 	Products,
-	CountryCode
+	CountryCode,
+	ItemPublicTokenExchangeRequest
 } from 'plaid';
 require('dotenv').config();
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const { v4: uuidv4 } = require('uuid');
-const util = require('util');
-const axios = require('axios');
+// const { v4: uuidv4 } = require('uuid');
+// const util = require('util');
+// const axios = require('axios');
 
 const CLIENT_ID: string = process.env.PLAID_CLIENT_ID || '';
 const SECRET = process.env.PLAID_SECRET;
 const PORT = process.env.PORT;
 const BASE_URL = process.env.BASE_URL;
 
-import { Prisma, PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+// import { Prisma, PrismaClient } from '@prisma/client';
+// const prisma = new PrismaClient();
 
 const PLAID_PRODUCTS = (
 	process.env.PLAID_PRODUCTS || Products.Transactions
@@ -102,10 +102,21 @@ app.get('/create_link_token', async function (req: Request, res: Response) {
 	}
 });
 
-app.post('/tokenInfo', async (req: Request, res: Response) => {
+app.post('/token_exchange', async (req: Request, res: Response) => {
 	console.log(req.body);
-	let ACCESS_TOKEN = req.body.ACCESS_TOKEN;
-	let PUBLIC_TOKEN = req.body.PUBLIC_TOKEN;
+
+	const request: ItemPublicTokenExchangeRequest = {
+		public_token: PUBLIC_TOKEN
+	};
+	try {
+		const response = await client.itemPublicTokenExchange(request);
+		ACCESS_TOKEN = response.data.access_token;
+		ITEM_ID = response.data.item_id;
+		res.status(200).send(`Access Token Obtained: ${ACCESS_TOKEN}`);
+	} catch (err) {
+		// handle error
+		console.error(err);
+	}
 });
 
 // const prettyPrintResponse = (res) => {
