@@ -103,7 +103,7 @@ app.post('/token_exchange', async (req: Request, res: Response) => {
 
 		console.log(`/token_exchange request: ${JSON.stringify(request)}`);
 		const response = await plaid.itemPublicTokenExchange(request);
-		prettyPrintResponse(res);
+		prettyPrintResponse(response);
 		ACCESS_TOKEN = response.data.access_token;
 		ITEM_ID = response.data.item_id;
 		// console.log(`ACCESS_TOKEN: ${ACCESS_TOKEN}`);
