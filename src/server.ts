@@ -6,7 +6,10 @@ import {
 	PlaidEnvironments,
 	Products,
 	CountryCode,
-	ItemPublicTokenExchangeRequest
+	ItemPublicTokenExchangeRequest,
+	Transaction,
+	RemovedTransaction,
+	TransactionsSyncRequest
 } from 'plaid';
 require('dotenv').config();
 const cors = require('cors');
@@ -108,8 +111,9 @@ app.post('/token_exchange', async (req: Request, res: Response) => {
 		ITEM_ID = response.data.item_id;
 		// console.log(`ACCESS_TOKEN: ${ACCESS_TOKEN}`);
 		// console.log(`ITEM_ID: ${ITEM_ID}`);
-		res.status(200).send(`Access Token Obtained: ${ACCESS_TOKEN}, Item_ID: ${ITEM_ID}`);
-
+		res.status(200).send(
+			`Access Token Obtained: ${ACCESS_TOKEN}, Item_ID: ${ITEM_ID}`
+		);
 	} catch (err) {
 		// handle error
 		console.error(err);
@@ -117,8 +121,41 @@ app.post('/token_exchange', async (req: Request, res: Response) => {
 	}
 });
 
+app.get('/transactions/get', async (req: Request, res: Response) => {
+	console.log('request recieved for transactions');
+
+	let added: Array<Transaction> = [];
+	let modified: Array<Transaction> = [];
+
+	let removed: Array<RemovedTransaction> = [];
+	let hasMore = true;
+
+	let counter = 0
+	// Iterate through each page of new transaction updates for item
+	while (counter < 5) {
+		const request: TransactionsSyncRequest = {
+			access_token: ACCESS_TOKEN,
+			options: { include_personal_finance_category: true }
+		};
+		const response = await plaid.transactionsSync(request);
+		prettyPrintResponse(response);
+		const data = response.data;
+		// Add this page of results
+		added = added.concat(data.added);
+		modified = modified.concat(data.modified);
+		removed = removed.concat(data.removed);
+		hasMore = data.has_more;
+
+		counter++
+		// Update cursor to the next cursor
+		// cursor = data.next_cursor;
+	}
+
+	res.json(added);
+});
+
 const prettyPrintResponse = (res) => {
-  console.log(util.inspect(res.data, { colors: true, depth: 4 }));
+	console.log(util.inspect(res.data, { colors: true, depth: 4 }));
 };
 
 app.listen(PORT, () => {
