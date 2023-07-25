@@ -12,7 +12,7 @@ require('dotenv').config();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 // const { v4: uuidv4 } = require('uuid');
-// const util = require('util');
+const util = require('util');
 // const axios = require('axios');
 
 const CLIENT_ID: string = process.env.PLAID_CLIENT_ID || '';
@@ -62,22 +62,11 @@ app.use(
 app.use(bodyParser.json());
 app.use(cors());
 
-const client = new PlaidApi(configuration);
+const plaid = new PlaidApi(configuration);
 
 app.get('/', (req: Request, res: Response): void => {
 	res.send('Express + TypeScript Server');
 });
-
-app.post(
-	'/api/info',
-	async (req: Request, res: Response, next: NextFunction) => {
-		res.json({
-			item_id: ITEM_ID,
-			access_token: ACCESS_TOKEN,
-			products: PLAID_PRODUCTS
-		});
-	}
-);
 
 app.get('/create_link_token', async function (req: Request, res: Response) {
 	// Get the client_user_id by searching for the current user
@@ -95,9 +84,9 @@ app.get('/create_link_token', async function (req: Request, res: Response) {
 		country_codes: country_codes
 	};
 	try {
-		const createTokenResponse = await client.linkTokenCreate(request);
+		const createTokenResponse = await plaid.linkTokenCreate(request);
+		prettyPrintResponse(createTokenResponse);
 		res.json(createTokenResponse.data);
-		console.log(createTokenResponse);
 	} catch (error) {
 		// handle error
 		res.send(error);
@@ -113,13 +102,14 @@ app.post('/token_exchange', async (req: Request, res: Response) => {
 		};
 
 		console.log(`/token_exchange request: ${JSON.stringify(request)}`);
-		const response = await client.itemPublicTokenExchange(request);
+		const response = await plaid.itemPublicTokenExchange(request);
+		prettyPrintResponse(res);
 		ACCESS_TOKEN = response.data.access_token;
 		ITEM_ID = response.data.item_id;
-		console.log(`ACCESS_TOKEN: ${ACCESS_TOKEN}`);
-		console.log(`ITEM_ID: ${ITEM_ID}`);
-		// res.status(200).send(`Access Token Obtained: ${ACCESS_TOKEN}`);
-		res.send('noice');
+		// console.log(`ACCESS_TOKEN: ${ACCESS_TOKEN}`);
+		// console.log(`ITEM_ID: ${ITEM_ID}`);
+		res.status(200).send(`Access Token Obtained: ${ACCESS_TOKEN}, Item_ID: ${ITEM_ID}`);
+
 	} catch (err) {
 		// handle error
 		console.error(err);
@@ -127,9 +117,9 @@ app.post('/token_exchange', async (req: Request, res: Response) => {
 	}
 });
 
-// const prettyPrintResponse = (res) => {
-//   console.log(util.inspect(res.data, { colors: true, depth: 4 }));
-// };
+const prettyPrintResponse = (res) => {
+  console.log(util.inspect(res.data, { colors: true, depth: 4 }));
+};
 
 app.listen(PORT, () => {
 	console.log(`🚀[server]: Server is running at http://localhost:${PORT}`);
