@@ -122,7 +122,7 @@ app.post('/token_exchange', async (req: Request, res: Response) => {
 });
 
 app.get('/transactions/get', async (req: Request, res: Response) => {
-	console.log('request recieved for transactions');
+	// console.log('request recieved for transactions');
 
 	let added: Array<Transaction> = [];
 	let modified: Array<Transaction> = [];
@@ -138,7 +138,7 @@ app.get('/transactions/get', async (req: Request, res: Response) => {
 			options: { include_personal_finance_category: true }
 		};
 		const response = await plaid.transactionsSync(request);
-		prettyPrintResponse(response);
+		// prettyPrintResponse(response);
 		const data = response.data;
 		// Add this page of results
 		added = added.concat(data.added);
