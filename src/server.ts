@@ -18,9 +18,9 @@ const bodyParser = require('body-parser');
 const util = require('util');
 // const axios = require('axios');
 
-const CLIENT_ID: string = process.env.PLAID_CLIENT_ID || '';
+const CLIENT_ID = process.env.PLAID_CLIENT_ID;
 const SECRET = process.env.PLAID_SECRET;
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8000;
 const BASE_URL = process.env.BASE_URL;
 
 // import { Prisma, PrismaClient } from '@prisma/client';
@@ -29,25 +29,18 @@ const BASE_URL = process.env.BASE_URL;
 const PLAID_PRODUCTS = (
 	process.env.PLAID_PRODUCTS || Products.Transactions
 ).split(',');
-
-// PLAID_COUNTRY_CODES is a comma-separated list of countries for which users
-// will be able to select institutions from.
 const PLAID_COUNTRY_CODES = (process.env.PLAID_COUNTRY_CODES || 'US').split(
 	','
 );
-
 const PLAID_REDIRECT_URI = process.env.PLAID_REDIRECT_URI || '';
 
-// We store the access_token in memory - in production, store it in a secure
-// persistent data store
-//! In Production: let ACCESS_TOKEN: string | null = null;
-//* For Testing:
+//TODO: Set the access token instead of hardcoding from .env
 let ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 let PUBLIC_TOKEN: string | null = null;
 let ITEM_ID: string | null = null;
 
 const configuration = new Configuration({
-	basePath: PlaidEnvironments.development,
+	basePath: PlaidEnvironments.sandbox,
 	baseOptions: {
 		headers: {
 			'PLAID-CLIENT-ID': CLIENT_ID,
@@ -122,7 +115,7 @@ app.post('/token_exchange', async (req: Request, res: Response) => {
 });
 
 app.get('/transactions/get', async (req: Request, res: Response) => {
-	// console.log('request recieved for transactions');
+	console.log('request recieved for transactions');
 
 	let added: Array<Transaction> = [];
 	let modified: Array<Transaction> = [];
