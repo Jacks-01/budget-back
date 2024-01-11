@@ -12,7 +12,6 @@
   "author": "jack stubblefield",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^5.0.0",
     "axios": "^1.4.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -20,7 +19,6 @@
     "eslint-plugin-prettier": "^5.0.0",
     "express": "^4.18.2",
     "plaid": "^14.1.0",
-    "prisma": "^5.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

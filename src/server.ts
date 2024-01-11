@@ -16,15 +16,12 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 // const { v4: uuidv4 } = require('uuid');
 const util = require('util');
-// const axios = require('axios');
 
 const CLIENT_ID = process.env.PLAID_CLIENT_ID;
 const SECRET = process.env.PLAID_SECRET;
 const PORT = process.env.PORT || 8000;
 const BASE_URL = process.env.BASE_URL;
 
-// import { Prisma, PrismaClient } from '@prisma/client';
-// const prisma = new PrismaClient();
 
 const PLAID_PRODUCTS = (
 	process.env.PLAID_PRODUCTS || Products.Transactions
@@ -36,11 +33,12 @@ const PLAID_REDIRECT_URI = process.env.PLAID_REDIRECT_URI || '';
 
 //TODO: Set the access token instead of hardcoding from .env
 let ACCESS_TOKEN = process.env.ACCESS_TOKEN;
+// let ACCESS_TOKEN = '';
 let PUBLIC_TOKEN: string | null = null;
 let ITEM_ID: string | null = null;
 
 const configuration = new Configuration({
-	basePath: PlaidEnvironments.sandbox,
+	basePath: PlaidEnvironments.development,
 	baseOptions: {
 		headers: {
 			'PLAID-CLIENT-ID': CLIENT_ID,
@@ -98,12 +96,13 @@ app.post('/token_exchange', async (req: Request, res: Response) => {
 		};
 
 		console.log(`/token_exchange request: ${JSON.stringify(request)}`);
+
 		const response = await plaid.itemPublicTokenExchange(request);
-		prettyPrintResponse(response);
+		console.log('/token_exchange response:', response.data);
 		ACCESS_TOKEN = response.data.access_token;
 		ITEM_ID = response.data.item_id;
-		// console.log(`ACCESS_TOKEN: ${ACCESS_TOKEN}`);
-		// console.log(`ITEM_ID: ${ITEM_ID}`);
+		console.log(`/token_exchange ACCESS_TOKEN: ${ACCESS_TOKEN}`);
+		console.log(`/token_exchange ITEM_ID: ${ITEM_ID}`);
 		res.status(200).send(
 			`Access Token Obtained: ${ACCESS_TOKEN}, Item_ID: ${ITEM_ID}`
 		);
@@ -116,7 +115,9 @@ app.post('/token_exchange', async (req: Request, res: Response) => {
 
 app.get('/transactions/get', async (req: Request, res: Response) => {
 	console.log('request recieved for transactions');
+	console.log('/transactions/get token check:', ACCESS_TOKEN);
 
+	try {
 	let added: Array<Transaction> = [];
 	let modified: Array<Transaction> = [];
 
@@ -131,7 +132,7 @@ app.get('/transactions/get', async (req: Request, res: Response) => {
 			options: { include_personal_finance_category: true }
 		};
 		const response = await plaid.transactionsSync(request);
-		// prettyPrintResponse(response);
+
 		const data = response.data;
 		// Add this page of results
 		added = added.concat(data.added);
@@ -142,9 +143,17 @@ app.get('/transactions/get', async (req: Request, res: Response) => {
 		counter++
 		// Update cursor to the next cursor
 		// cursor = data.next_cursor;
+		}
+		
+	console.log('/transactions/get after sync: ', added[0]);
+	res.json(added);
+
+	}
+	catch (error) {
+		res.status(500).send(error)
 	}
 
-	res.json(added);
+	
 });
 
 const prettyPrintResponse = (res) => {
