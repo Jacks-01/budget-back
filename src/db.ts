@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+// import { getAnalytics } from "firebase/analytics";
 const FB_API_KEY = process.env.FB_API_KEY;
 const FB_AUTH_DOMAIN = process.env.FB_AUTH_DOMAIN;
 const FB_PROJECT_ID = process.env.FB_PROJECT_ID;
@@ -25,5 +25,6 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+export const db = initializeApp(firebaseConfig);
+
+// const analytics = getAnalytics(app);
