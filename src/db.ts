@@ -1,6 +1,11 @@
-// Import the functions you need from the SDKs you need
+
+//* Firebase imports
 import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 // import { getAnalytics } from "firebase/analytics";
+
+//* Environment variables
+require("dotenv").config();
 const FB_API_KEY = process.env.FB_API_KEY;
 const FB_AUTH_DOMAIN = process.env.FB_AUTH_DOMAIN;
 const FB_PROJECT_ID = process.env.FB_PROJECT_ID;
@@ -9,11 +14,6 @@ const FB_MESSAGING_SENDER_ID = process.env.FB_MESSAGING_SENDER_ID;
 const FB_APP_ID = process.env.FB_APP_ID;
 const FB_MEASUREMENT_ID = process.env.FB_MEASUREMENT_ID;
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: FB_API_KEY,
   authDomain: FB_AUTH_DOMAIN,
@@ -25,6 +25,6 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-export const db = initializeApp(firebaseConfig);
-
-// const analytics = getAnalytics(app);
+const app = initializeApp(firebaseConfig);
+// Initialize Cloud Firestore and get a reference to the service
+export const db = getFirestore(app);

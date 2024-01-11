@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 8000;
 
 //* Routers
 import plaidRouter from "./routes/plaid";
+import budgetRouter from "./routes/budget";
 
 const app: Express = express();
 app.use(
@@ -24,6 +25,8 @@ app.get("/", (req: Request, res: Response): void => {
 });
 
 app.use("/plaid", plaidRouter);
+
+app.use("/budget", budgetRouter);
 
 app.listen(PORT, () => {
   console.log(`🚀[server]: Server is running at http://localhost:${PORT}`);
