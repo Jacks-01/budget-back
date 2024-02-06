@@ -28,7 +28,7 @@ app.get("/", (req: Request, res: Response): void => {
 
 app.use("/plaid", plaidRouter)
 
-app.use("/budgets", budgetRouter)
+app.use("/budget", budgetRouter)
 
 app.use("/users", userRouter)
 
