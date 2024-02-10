@@ -2,6 +2,7 @@
 import express, {Express, Request, Response, NextFunction} from "express"
 const cors = require("cors")
 const bodyParser = require("body-parser")
+import helmet from "helmet"
 
 //* Environment variables
 require("dotenv").config()
@@ -21,6 +22,7 @@ app.use(
 )
 app.use(bodyParser.json())
 app.use(cors())
+app.use(helmet())
 
 app.get("/", (req: Request, res: Response): void => {
   res.send("Express + TypeScript Server")

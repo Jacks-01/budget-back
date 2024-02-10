@@ -20,6 +20,7 @@
     "express": "^4.18.2",
     "express-oauth2-jwt-bearer": "^1.6.0",
     "firebase": "^10.7.1",
+    "helmet": "^7.1.0",
     "plaid": "^14.1.0",
     "uuid": "^9.0.0"
   },
