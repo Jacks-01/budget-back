@@ -7,8 +7,11 @@ const router = express.Router()
 
 router.get("/create", authCheck, async (req, res) => {
   try {
+    const userId = req.auth.payload.sub
+    console.log('JWT sub:', req.auth.payload.sub)
     const docRef = await addDoc(collection(db, "users"), {
       email: "test@gmail.com",
+      id: userId
     })
 
     console.log("Document written with ID: ", docRef.id)
